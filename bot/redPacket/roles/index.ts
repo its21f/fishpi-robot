@@ -1,4 +1,4 @@
-import Fishpi, { ChatMsg, RedPacketStatusMsg } from 'fishpi';
+import Fishpi, { IChatRoomMsg, IRedpacket, IRedPacketStatusMsg } from 'fishpi';
 import * as glob from 'glob';
 import * as path from "path";
 import * as fs from "fs";
@@ -11,13 +11,13 @@ export interface RedPackRole {
    * @param msg 红包状态更新消息
    * @param fishpi FishPi实例
    */
-  update?: (msg: RedPacketStatusMsg, fishpi: Fishpi) => any,
+  update?: (msg: IRedPacketStatusMsg, fishpi: Fishpi) => any,
   /**
    * 红包规则执行
    * @param msg 红包消息
    * @param fishpi FishPi实例
    */
-  exec?: (msg: ChatMsg, fishpi: Fishpi) => any,
+  exec?: (msg: IChatRoomMsg<IRedpacket>, fishpi: Fishpi) => any,
   /**
    * 是否启用
    */

@@ -1,4 +1,4 @@
-import Fishpi, { NoticeMsg } from 'fishpi';
+import Fishpi from 'fishpi';
 import { domain } from '../config.json';
 import fetch from 'node-fetch';
 import { Robots } from '@bot/index';
@@ -14,9 +14,7 @@ export default {
     else if (config.username && config.passwd) await fishpi.login(config);
     else throw new Error('请提供 token 或者用户名密码');
 
-    const rsp = await fishpi.account.info();
-    if (rsp.code) throw new Error(`登录失败：${rsp.msg}`);
-    const user = rsp.data!;
+    const user = await fishpi.account.info().catch((err) => { throw new Error(`登录失败：${err.message}`); });
     console.log(`登录成功：${user.userName}`);
   },
 
@@ -24,21 +22,8 @@ export default {
     console.log('聊天室监听中...');
     
     // 监听聊天室消息
-    fishpi.chatroom.addListener(async ({ msg }) => {
-      if (!bots[msg.type]) return;
-
-      const { exec } = bots[msg.type];
-      if (!exec) return;
-
-      exec(msg, fishpi);
-    });
-
-    fishpi.chat.addListener(async ({ msg }) => {
-      const chat = msg as NoticeMsg;
-      if (chat.command != 'newIdleChatMessage') return;
-      const { data: chats } = await fishpi.chat.get({ user: chat.senderUserName!, size: 2 });
-      const chatData = chats?.find(chat => chat.preview == chat.preview);
-      if (bots.chats?.exec && chatData) bots.chats?.exec(chatData, fishpi);
+    Object.values(bots).forEach(async (bot) => {
+      bot.exec && await bot.exec(fishpi);
     });
 
     Schedule.load(fishpi);

@@ -1,4 +1,4 @@
-import FishPi, { ChatMsg } from "fishpi";
+import FishPi, { IChatRoomMsg } from "fishpi";
 import * as glob from "glob";
 import * as path from "path";
 import * as fs from "fs";
@@ -15,7 +15,7 @@ export interface MsgRole {
    * @param msg 红包消息
    * @param fishpi FishPi实例
    */
-  exec: (msg: ChatMsg, fishpi: FishPi) => Promise<boolean> | void;
+  exec: (msg: IChatRoomMsg, fishpi: FishPi) => Promise<boolean> | void;
   /**
    * 是否启用
    */

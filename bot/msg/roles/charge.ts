@@ -1,8 +1,8 @@
-import Fishpi, { ChatMsg, RedPacketType } from "fishpi";
+import Fishpi, { IChatRoomMsg, RedPacketType } from "fishpi";
 
 export default [{
   match: [/@chatgpt/, /您的鱼翅已耗尽咯/],
-  exec: async ({ userName }: ChatMsg, fishpi: Fishpi) => {
+  exec: async ({ userName }: IChatRoomMsg, fishpi: Fishpi) => {
     fishpi.chatroom.redpacket.send({
       money: 320,
       count: 1,

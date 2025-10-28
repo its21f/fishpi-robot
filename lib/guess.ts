@@ -1,4 +1,4 @@
-import { GestureType, RedPacketInfo } from 'fishpi';
+import { GestureType, IRedPacketInfo } from 'fishpi';
 import { LocalStorage } from 'node-localstorage';
 import * as path from 'path'
 const cwd = process.cwd();
@@ -40,7 +40,7 @@ export function guess(username: string) {
 /**
  * 结果记录
  */
-export function result(username: string, data: RedPacketInfo, myGesture :number, toRecord: boolean) {
+export function result(username: string, data: IRedPacketInfo, myGesture :number, toRecord: boolean) {
   // 计算对方出拳，坑爹阿达，自己猜的红包不告诉我对方出拳
   let gesture = data.info.gesture || (
     data.who[0].userMoney == 0 ? myGesture : data.who[0].userMoney > 0 ?

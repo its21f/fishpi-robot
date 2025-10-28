@@ -9,7 +9,7 @@ async function main() {
       output: process.stdout
   });
 
-  function inputData(key: string, defaultVal: string | number): Promise<string> {
+  function inputData(key: string, defaultVal: string | number): Promise<string|number> {
       return new Promise((resolve, reject) => {
           try {
               rl.question(`${key} ${(defaultVal ? `[${defaultVal}]` : '')}: `, function (val) {
@@ -25,7 +25,7 @@ async function main() {
 
   config['domain'] = await inputData('Set Fishpi domain', config.domain || 'fishpi.cn');
 
-  if ((await inputData('Do you want to use token to login? [Y/n]', '')).toLowerCase() === 'n') {
+  if ((await inputData('Do you want to use token to login? [Y/n]', '')).toString().toLowerCase() === 'n') {
     config['username'] = await inputData('username', config.username || '');
     config['passwd'] = await inputData('password', config.passwd || '');
   } else {

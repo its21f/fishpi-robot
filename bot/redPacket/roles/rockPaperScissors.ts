@@ -1,4 +1,4 @@
-import Fishpi, { ChatMsg, RedPacket } from "fishpi";
+import Fishpi, { IChatRoomMsg, IRedpacket } from "fishpi";
 import { getRecord, guess, result, success, failed } from "@lib/guess";
 
 const rps = [ '石头', '剪刀', '布' ];
@@ -7,9 +7,7 @@ let timer :NodeJS.Timeout | null = null;
 let fight :NodeJS.Timeout | null = null;
 
 export default {
-  exec({ content: redpack, userName, oId }: ChatMsg, fishpi: Fishpi) {
-    redpack = redpack as RedPacket;
-
+  exec({ content: redpack, userName, oId }: IChatRoomMsg<IRedpacket>, fishpi: Fishpi) {
     // 预备猜拳
     let points = redpack.money;
     let g = guess(userName);
@@ -28,14 +26,14 @@ export default {
       }
 
       // 尝试猜拳
-      fishpi.chatroom.redpacket.open(oId, g).then(async (data: any) => {
+      fishpi.chatroom.redpacket.open(oId, g).then(async (data) => {
         try {
-          let user = (await fishpi.account.info()).data;
-          if (!data) return console.log(data.message);
+          let user = await fishpi.account.info();
+          if (!data) return;
 
           // 猜拳结果
           const isMeOpen = data?.who[0].userName == user?.userName
-          let r = result(userName, data!, g, isMeOpen);
+          let r = result(userName, data, g, isMeOpen);
 
           if (userName == 'sevenSummer' && isMeOpen) {
             const record = getRecord(userName);
@@ -49,13 +47,15 @@ export default {
           else console.log(`${userName}出拳：${rps[r]}，我出拳${rps[g]}, ${data?.who[0].userName}获得${data?.who[0].userMoney}积分`);
 
           timer = null;
-          user = (await fishpi.account.info()).data
-          console.log(`剩余 ${user?.userPoint} 积分`)
+          user = await fishpi.account.info();
+          console.log(`剩余 ${user?.points} 积分`);
         } catch (error: any) {
           console.error('Error: ', error.message);
         }
+      }).catch((err) => {
+        console.error('Open Redpacket Error: ', err.message);
       });
-    }, timer ? 10000 : 5000);
+    }, timer ? 20000 : 10000);
   },
   enable: true,
 }

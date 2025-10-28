@@ -1,8 +1,7 @@
-import Fishpi, { ChatMsg, RedPacket } from "fishpi";
+import Fishpi, { IChatRoomMsg, IRedpacket } from "fishpi";
 
 export default {
-  exec({ content: redpack, userName, oId }: ChatMsg, fishpi: Fishpi) {
-    redpack = redpack as RedPacket;
+  exec({ content: redpack, userName, oId }: IChatRoomMsg<IRedpacket>, fishpi: Fishpi) {
     if (redpack.money <= 0) return;
     setTimeout(() => {
       fishpi.chatroom.redpacket.open(oId);
